@@ -152,6 +152,7 @@
             measure_col: 'TEST',
             measure_order_col: 'TESTN',
             value_col: 'STRESN',
+            unit_col: 'STRESU',
             filters: null,
             details: null,
             measure: {
@@ -339,6 +340,9 @@
 
         this.initial_data.forEach(function (d) {
             d[_this.config.measure_col] = d[_this.config.measure_col].trim();
+
+            //Concatenate unit to measure if provided.
+            d.sdd_measure = d.hasOwnProperty(_this.config.unit_col) ? d[_this.config.measure_col] + " (" + d[_this.config.unit_col] + ")" : d[_this.config.measure_col];
         });
     }
 
@@ -384,17 +388,17 @@
         })).values())).sort(webcharts.dataOps.naturalSorter);
 
         // Define set of measure values with units (in ADaM units are already attached; in SDTM units are captured in a separate variable).
-        this.soe_measures = this.initial_data[0].hasOwnProperty(this.config.measure_order_col) ? [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
+        this.sdd_measures = this.initial_data[0].hasOwnProperty(this.config.measure_order_col) ? [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
             return +d[_this.config.measure_order_col];
         })).values())).sort(function (a, b) {
             return a - b;
         }).map(function (value) {
             return _this.initial_data.find(function (d) {
                 return +d[_this.config.measure_order_col] === value;
-            }).soe_measure;
+            }).sdd_measure;
         }) // sort measures by measure order
         : [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
-            return d.soe_measure;
+            return d.sdd_measure;
         })).values())).sort(webcharts.dataOps.naturalSorter); // sort measures alphabetically
     }
 
@@ -423,13 +427,13 @@
         var x_control = this.controls.config.inputs.find(function (input) {
             return input.option === 'measure.x';
         });
-        x_control.values = this.measures;
+        x_control.values = this.sdd_measures;
         x_control.start = this.config.measure.x;
 
         var y_control = this.controls.config.inputs.find(function (input) {
             return input.option === 'measure.y';
         });
-        y_control.values = this.measures;
+        y_control.values = this.sdd_measures;
         y_control.start = this.config.measure.y;
 
         var timepoint1_control = this.controls.config.inputs.find(function (input) {
@@ -453,10 +457,10 @@
 
     function initSettings() {
         //Set initial measures.
-        this.config.measure.x = this.config.measure.x || this.measures[0];
+        this.config.measure.x = this.config.measure.x || this.sdd_measures[0];
 
         //  this.config.x.column = this.config.measure.x;
-        this.config.measure.y = this.config.measure.y || this.measures[1];
+        this.config.measure.y = this.config.measure.y || this.sdd_measures[1];
 
         //Set timepoint 1 and timepoint 2 visits.
         this.config.visits.timepoint1 = this.config.visits.timepoint1.length > 0 ? this.config.visits.timepoint1 : [this.visits[0]];
@@ -552,10 +556,10 @@
     function getMeasureDetails(pt_data) {
         var config = this.config;
         var measure_details = d3.nest().key(function (d) {
-            return d[config.measure_col];
+            return d.sdd_measure;
         }).rollup(function (di) {
             var measure_obj = {};
-            measure_obj.key = di[0][config.measure_col];
+            measure_obj.key = di[0].sdd_measure;
             measure_obj.spark = 'sparkline placeholder';
             measure_obj.toggle = '+';
             measure_obj.raw = di;

@@ -1,10 +1,10 @@
 export default function updateControlInputs() {
     const x_control = this.controls.config.inputs.find(input => input.option === 'measure.x');
-    x_control.values = this.measures;
+    x_control.values = this.sdd_measures;
     x_control.start = this.config.measure.x;
 
     const y_control = this.controls.config.inputs.find(input => input.option === 'measure.y');
-    y_control.values = this.measures;
+    y_control.values = this.sdd_measures;
     y_control.start = this.config.measure.y;
 
     const timepoint1_control = this.controls.config.inputs.find(

@@ -16,15 +16,15 @@ export default function getMeasures() {
           );
 
     // Define set of measure values with units (in ADaM units are already attached; in SDTM units are captured in a separate variable).
-    this.soe_measures = this.initial_data[0].hasOwnProperty(this.config.measure_order_col)
+    this.sdd_measures = this.initial_data[0].hasOwnProperty(this.config.measure_order_col)
         ? [...new Set(this.initial_data.map(d => +d[this.config.measure_order_col])).values()]
               .sort((a, b) => a - b)
               .map(
                   value =>
                       this.initial_data.find(d => +d[this.config.measure_order_col] === value)
-                          .soe_measure
+                          .sdd_measure
               ) // sort measures by measure order
-        : [...new Set(this.initial_data.map(d => d.soe_measure)).values()].sort(
+        : [...new Set(this.initial_data.map(d => d.sdd_measure)).values()].sort(
               dataOps.naturalSorter
           ); // sort measures alphabetically
 }

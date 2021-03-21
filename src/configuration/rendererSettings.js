@@ -6,6 +6,7 @@ export default function rendererSettings() {
         measure_col: 'TEST',
         measure_order_col: 'TESTN',
         value_col: 'STRESN',
+        unit_col: 'STRESU',
         filters: null,
         details: null,
         measure: {

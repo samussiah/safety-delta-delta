@@ -3,10 +3,10 @@ import { nest, mean } from 'd3';
 export default function getMeasureDetails(pt_data) {
     var config = this.config;
     var measure_details = nest()
-        .key(d => d[config.measure_col])
+        .key(d => d.sdd_measure)
         .rollup(function(di) {
             var measure_obj = {};
-            measure_obj.key = di[0][config.measure_col];
+            measure_obj.key = di[0].sdd_measure;
             measure_obj.spark = 'sparkline placeholder';
             measure_obj.toggle = '+';
             measure_obj.raw = di;

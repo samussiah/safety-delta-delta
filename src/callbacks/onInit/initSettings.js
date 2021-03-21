@@ -1,9 +1,9 @@
 export default function initSettings() {
     //Set initial measures.
-    this.config.measure.x = this.config.measure.x || this.measures[0];
+    this.config.measure.x = this.config.measure.x || this.sdd_measures[0];
 
     //  this.config.x.column = this.config.measure.x;
-    this.config.measure.y = this.config.measure.y || this.measures[1];
+    this.config.measure.y = this.config.measure.y || this.sdd_measures[1];
 
     //Set timepoint 1 and timepoint 2 visits.
     this.config.visits.timepoint1 =
