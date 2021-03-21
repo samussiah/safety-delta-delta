@@ -1,11 +1,8 @@
-import { set } from 'd3';
-
 export default function getVisits() {
     if (this.config.visit_order_col && this.initial_data[0].hasOwnProperty(this.config.visit_order_col))
-        this.visits = set(
+        this.visits = [...new Set(
             this.initial_data.map(d => d[this.config.visit_col] + '||' + d[this.config.visit_order_col])
-        )
-            .values()
+        ).values()]
             .sort((a, b) => {
                 const aSplit = a.split('||');
                 const aVisit = aSplit[0];
@@ -26,7 +23,7 @@ export default function getVisits() {
             })
             .map(visit => visit.split('||')[0]);
     else
-        this.visits = set(this.initial_data.map(d => d[this.config.visit_col]))
+        this.visits = [...new Set(this.initial_data.map(d => d[this.config.visit_col])).values()]
             .values()
             .sort();
 }

@@ -286,7 +286,9 @@
                 var filterObj = {
                     type: 'subsetter',
                     value_col: filter.value_col || filter,
-                    label: filter.label || filter.value_col || filter
+                    label: filter.label || filter.value_col || filter,
+                    start: filter.start || null,
+                    all: filter.all || true
                 };
                 controlInputs.push(filterObj);
             });
@@ -405,9 +407,9 @@
     function getVisits() {
         var _this = this;
 
-        if (this.config.visit_order_col && this.initial_data[0].hasOwnProperty(this.config.visit_order_col)) this.visits = d3.set(this.initial_data.map(function (d) {
+        if (this.config.visit_order_col && this.initial_data[0].hasOwnProperty(this.config.visit_order_col)) this.visits = [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
             return d[_this.config.visit_col] + '||' + d[_this.config.visit_order_col];
-        })).values().sort(function (a, b) {
+        })).values())).sort(function (a, b) {
             var aSplit = a.split('||');
             var aVisit = aSplit[0];
             var aOrder = aSplit[1];
@@ -418,9 +420,9 @@
             return diff ? diff : aOrder < bOrder ? -1 : aOrder > bOrder ? 1 : aVisit < bVisit ? -1 : 1;
         }).map(function (visit) {
             return visit.split('||')[0];
-        });else this.visits = d3.set(this.initial_data.map(function (d) {
+        });else this.visits = [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
             return d[_this.config.visit_col];
-        })).values().sort();
+        })).values())).values().sort();
     }
 
     function updateControlInputs() {
@@ -808,9 +810,7 @@
                     return +a[config.visit_order_col] - +b[config.visit_order_col];
                 });
 
-                var x = d3.scale.linear().domain(d3.extent(overTime, function (m) {
-                    return +m[config.visit_order_col];
-                })).range([offset, width - offset]);
+                var x = d3.scale.ordinal().domain(chart.visits).rangeBands([offset, width - offset]);
 
                 //y-domain includes 99th population percentile + any participant outliers
                 var y = d3.scale.linear().domain(d3.extent(overTime, function (m) {
@@ -825,7 +825,7 @@
 
                 //draw the sparkline
                 var draw_sparkline = d3.svg.line().interpolate('linear').x(function (d) {
-                    return x(d[config.visit_order_col]);
+                    return x(d[config.visit_col]);
                 }).y(function (d) {
                     return y(d[config.value_col]);
                 });
@@ -839,7 +839,7 @@
                 //draw baseline values
 
                 var circles = canvas.selectAll('circle').data(overTime).enter().append('circle').attr('class', 'circle outlier').attr('cx', function (d) {
-                    return x(d[config.visit_order_col]);
+                    return x(d[config.visit_col]);
                 }).attr('cy', function (d) {
                     return y(d[config.value_col]);
                 }).attr('r', '2px').attr('stroke', function (d) {

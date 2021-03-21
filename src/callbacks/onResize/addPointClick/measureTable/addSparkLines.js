@@ -31,9 +31,9 @@ export default function addSparkLines(d) {
                     );
 
                 var x = scale
-                    .linear()
-                    .domain(extent(overTime, m => +m[config.visit_order_col]))
-                    .range([offset, width - offset]);
+                    .ordinal()
+                    .domain(chart.visits)
+                    .rangeBands([offset, width - offset]);
 
                 //y-domain includes 99th population percentile + any participant outliers
                 var y = scale
@@ -54,7 +54,7 @@ export default function addSparkLines(d) {
                 var draw_sparkline = svg
                     .line()
                     .interpolate('linear')
-                    .x(d => x(d[config.visit_order_col]))
+                    .x(d => x(d[config.visit_col]))
                     .y(d => y(d[config.value_col]));
                 var sparkline = canvas
                     .append('path')
@@ -74,7 +74,7 @@ export default function addSparkLines(d) {
                     .enter()
                     .append('circle')
                     .attr('class', 'circle outlier')
-                    .attr('cx', d => x(d[config.visit_order_col]))
+                    .attr('cx', d => x(d[config.visit_col]))
                     .attr('cy', d => y(d[config.value_col]))
                     .attr('r', '2px')
                     .attr('stroke', d => d.color)
