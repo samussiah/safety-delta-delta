@@ -148,8 +148,9 @@
         return {
             id_col: 'USUBJID',
             visit_col: 'VISIT',
-            visitn_col: 'VISITNUM',
+            visit_order_col: 'VISITNUM',
             measure_col: 'TEST',
+            measure_order_col: 'TESTN',
             value_col: 'STRESN',
             filters: null,
             details: null,
@@ -200,10 +201,13 @@
     }
 
     function syncSettings(settings) {
-        //handle a string argument to filters
+        // Map [ visitn_col ] to [ visit_order_col ] to maintain backwards compatibility.
+        if (settings.hasOwnProperty('visitn_col')) settings.visit_order_col = settings.visitn_col;
+
+        // Handle a string argument to filters.
         if (!(settings.filters instanceof Array)) settings.filters = typeof settings.filters === 'string' ? [settings.filters] : [];
 
-        //handle a string argument to details
+        // Handle a string argument to detail.
         if (!(settings.details instanceof Array)) settings.details = typeof settings.details === 'string' ? [settings.details] : [];
 
         //Define default details.
@@ -232,6 +236,12 @@
             });
             settings.details = defaultDetails;
         }
+
+        // Map [ visits.baseline ] to [ visits.timepoint1 ] to maintain backwards compatibility.
+        if (settings.visits.hasOwnProperty('baseline')) settings.visits.timepoint1 = settings.visits.baseline;
+
+        // Map [ visits.comparison ] to [ visits.timepoint1 ] to maintain backwards compatibility.
+        if (settings.visits.hasOwnProperty('comparison')) settings.visits.timepoint2 = settings.visits.comparison;
 
         return settings;
     }
@@ -347,19 +357,52 @@
         });
     }
 
+    var toConsumableArray = function (arr) {
+      if (Array.isArray(arr)) {
+        for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+        return arr2;
+      } else {
+        return Array.from(arr);
+      }
+    };
+
     function getMeasures() {
         var _this = this;
 
-        this.measures = d3.set(this.initial_data.map(function (d) {
+        // Define set of measure values as they appear in the data.
+        this.measures = this.initial_data[0].hasOwnProperty(this.config.measure_order_col) ? [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
+            return +d[_this.config.measure_order_col];
+        })).values())).sort(function (a, b) {
+            return a - b;
+        }).map(function (value) {
+            return _this.initial_data.find(function (d) {
+                return +d[_this.config.measure_order_col] === value;
+            })[_this.config.measure_col];
+        }) : [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
             return d[_this.config.measure_col];
-        })).values().sort();
+        })).values())).sort(webcharts.dataOps.naturalSorter);
+
+        // Define set of measure values with units (in ADaM units are already attached; in SDTM units are captured in a separate variable).
+        this.soe_measures = this.initial_data[0].hasOwnProperty(this.config.measure_order_col) ? [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
+            return +d[_this.config.measure_order_col];
+        })).values())).sort(function (a, b) {
+            return a - b;
+        }).map(function (value) {
+            return _this.initial_data.find(function (d) {
+                return +d[_this.config.measure_order_col] === value;
+            }).soe_measure;
+        }) // sort measures by measure order
+        : [].concat(toConsumableArray(new Set(this.initial_data.map(function (d) {
+            return d.soe_measure;
+        })).values())).sort(webcharts.dataOps.naturalSorter); // sort measures alphabetically
     }
 
     function getVisits() {
         var _this = this;
 
-        if (this.config.visitn_col && this.initial_data[0].hasOwnProperty(this.config.visitn_col)) this.visits = d3.set(this.initial_data.map(function (d) {
-            return d[_this.config.visit_col] + '||' + d[_this.config.visitn_col];
+        if (this.config.visit_order_col && this.initial_data[0].hasOwnProperty(this.config.visit_order_col)) this.visits = d3.set(this.initial_data.map(function (d) {
+            return d[_this.config.visit_col] + '||' + d[_this.config.visit_order_col];
         })).values().sort(function (a, b) {
             var aSplit = a.split('||');
             var aVisit = aSplit[0];
@@ -758,11 +801,11 @@
                     height = 25,
                     offset = 4,
                     overTime = row_d.raw.sort(function (a, b) {
-                    return +a[config.visitn_col] - +b[config.visitn_col];
+                    return +a[config.visit_order_col] - +b[config.visit_order_col];
                 });
 
                 var x = d3.scale.linear().domain(d3.extent(overTime, function (m) {
-                    return +m[config.visitn_col];
+                    return +m[config.visit_order_col];
                 })).range([offset, width - offset]);
 
                 //y-domain includes 99th population percentile + any participant outliers
@@ -778,7 +821,7 @@
 
                 //draw the sparkline
                 var draw_sparkline = d3.svg.line().interpolate('linear').x(function (d) {
-                    return x(d[config.visitn_col]);
+                    return x(d[config.visit_order_col]);
                 }).y(function (d) {
                     return y(d[config.value_col]);
                 });
@@ -792,7 +835,7 @@
                 //draw baseline values
 
                 var circles = canvas.selectAll('circle').data(overTime).enter().append('circle').attr('class', 'circle outlier').attr('cx', function (d) {
-                    return x(d[config.visitn_col]);
+                    return x(d[config.visit_order_col]);
                 }).attr('cy', function (d) {
                     return y(d[config.value_col]);
                 }).attr('r', '2px').attr('stroke', function (d) {
@@ -800,7 +843,7 @@
                 }).attr('fill', function (d) {
                     return d.color == '#999' ? 'transparent' : d.color;
                 }).append('title').text(function (d) {
-                    return 'Value = ' + d[config.value_col] + ' @ Visit ' + d[config.visitn_col];
+                    return 'Value = ' + d[config.value_col] + ' @ Visit ' + d[config.visit_order_col];
                 });
             });
         }

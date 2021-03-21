@@ -27,12 +27,12 @@ export default function addSparkLines(d) {
                     height = 25,
                     offset = 4,
                     overTime = row_d.raw.sort(
-                        (a, b) => +a[config.visitn_col] - +b[config.visitn_col]
+                        (a, b) => +a[config.visit_order_col] - +b[config.visit_order_col]
                     );
 
                 var x = scale
                     .linear()
-                    .domain(extent(overTime, m => +m[config.visitn_col]))
+                    .domain(extent(overTime, m => +m[config.visit_order_col]))
                     .range([offset, width - offset]);
 
                 //y-domain includes 99th population percentile + any participant outliers
@@ -54,7 +54,7 @@ export default function addSparkLines(d) {
                 var draw_sparkline = svg
                     .line()
                     .interpolate('linear')
-                    .x(d => x(d[config.visitn_col]))
+                    .x(d => x(d[config.visit_order_col]))
                     .y(d => y(d[config.value_col]));
                 var sparkline = canvas
                     .append('path')
@@ -74,7 +74,7 @@ export default function addSparkLines(d) {
                     .enter()
                     .append('circle')
                     .attr('class', 'circle outlier')
-                    .attr('cx', d => x(d[config.visitn_col]))
+                    .attr('cx', d => x(d[config.visit_order_col]))
                     .attr('cy', d => y(d[config.value_col]))
                     .attr('r', '2px')
                     .attr('stroke', d => d.color)
@@ -82,7 +82,7 @@ export default function addSparkLines(d) {
                     .append('title')
                     .text(function(d) {
                         return (
-                            'Value = ' + d[config.value_col] + ' @ Visit ' + d[config.visitn_col]
+                            'Value = ' + d[config.value_col] + ' @ Visit ' + d[config.visit_order_col]
                         );
                     });
             });

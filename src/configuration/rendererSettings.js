@@ -2,8 +2,9 @@ export default function rendererSettings() {
     return {
         id_col: 'USUBJID',
         visit_col: 'VISIT',
-        visitn_col: 'VISITNUM',
+        visit_order_col: 'VISITNUM',
         measure_col: 'TEST',
+        measure_order_col: 'TESTN',
         value_col: 'STRESN',
         filters: null,
         details: null,

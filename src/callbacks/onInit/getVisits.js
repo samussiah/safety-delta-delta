@@ -1,9 +1,9 @@
 import { set } from 'd3';
 
 export default function getVisits() {
-    if (this.config.visitn_col && this.initial_data[0].hasOwnProperty(this.config.visitn_col))
+    if (this.config.visit_order_col && this.initial_data[0].hasOwnProperty(this.config.visit_order_col))
         this.visits = set(
-            this.initial_data.map(d => d[this.config.visit_col] + '||' + d[this.config.visitn_col])
+            this.initial_data.map(d => d[this.config.visit_col] + '||' + d[this.config.visit_order_col])
         )
             .values()
             .sort((a, b) => {

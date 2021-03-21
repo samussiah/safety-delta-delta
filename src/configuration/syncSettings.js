@@ -1,9 +1,13 @@
 export default function syncSettings(settings) {
-    //handle a string argument to filters
+    // Map [ visitn_col ] to [ visit_order_col ] to maintain backwards compatibility.
+    if (settings.hasOwnProperty('visitn_col'))
+        settings.visit_order_col = settings.visitn_col;
+
+    // Handle a string argument to filters.
     if (!(settings.filters instanceof Array))
         settings.filters = typeof settings.filters === 'string' ? [settings.filters] : [];
 
-    //handle a string argument to details
+    // Handle a string argument to detail.
     if (!(settings.details instanceof Array))
         settings.details = typeof settings.details === 'string' ? [settings.details] : [];
 
@@ -46,6 +50,14 @@ export default function syncSettings(settings) {
         });
         settings.details = defaultDetails;
     }
+
+    // Map [ visits.baseline ] to [ visits.timepoint1 ] to maintain backwards compatibility.
+    if (settings.visits.hasOwnProperty('baseline'))
+        settings.visits.timepoint1 = settings.visits.baseline;
+
+    // Map [ visits.comparison ] to [ visits.timepoint1 ] to maintain backwards compatibility.
+    if (settings.visits.hasOwnProperty('comparison'))
+        settings.visits.timepoint2 = settings.visits.comparison;
 
     return settings;
 }
