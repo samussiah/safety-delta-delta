@@ -3,16 +3,18 @@ export default function controlInputs() {
         {
             type: 'dropdown',
             values: [],
-            label: 'Baseline visit(s)',
-            option: 'visits.baseline',
+            label: 'Timepoint 1',
+            //description: 'choose one or more',
+            option: 'visits.timepoint1',
             require: true,
             multiple: true
         },
         {
             type: 'dropdown',
             values: [],
-            label: 'Comparison visit(s)',
-            option: 'visits.comparison',
+            label: 'Timepoint 2',
+            //description: 'choose one or more',
+            option: 'visits.timepoint2',
             require: true,
             multiple: true
         },

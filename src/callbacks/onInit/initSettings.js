@@ -5,12 +5,12 @@ export default function initSettings() {
     //  this.config.x.column = this.config.measure.x;
     this.config.measure.y = this.config.measure.y || this.measures[1];
 
-    //Set baseline and comparison visits.
-    this.config.visits.baseline =
-        this.config.visits.baseline.length > 0 ? this.config.visits.baseline : [this.visits[0]];
+    //Set timepoint 1 and timepoint 2 visits.
+    this.config.visits.timepoint1 =
+        this.config.visits.timepoint1.length > 0 ? this.config.visits.timepoint1 : [this.visits[0]];
 
-    this.config.visits.comparison =
-        this.config.visits.comparison.length > 0
-            ? this.config.visits.comparison
+    this.config.visits.timepoint2 =
+        this.config.visits.timepoint2.length > 0
+            ? this.config.visits.timepoint2
             : [this.visits[this.visits.length - 1]];
 }

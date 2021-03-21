@@ -12,8 +12,8 @@ export default function rendererSettings() {
             y: null
         },
         visits: {
-            baseline: [],
-            comparison: [],
+            timepoint1: [],
+            timepoint2: [],
             stat: 'mean'
         },
         add_regression_line: true

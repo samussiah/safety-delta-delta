@@ -15,9 +15,20 @@ export default function styles() {
             '    margin: 0 2% 5px 0;' +
             '    padding: 0;' +
             '}',
-        '#sdd-controls .control-group > * {' + '    display: inline-block;' + '}',
-        '#sdd-controls .changer {' + '    float: right;' + '    width: 50%;' + '}',
-        '#sdd-controls .wc-control-label {' + '    text-align: right;' + '    width: 48%;' + '}',
+        '#sdd-controls .control-group > * {' +
+        '    display: inline-block;' +
+        '}',
+        '#sdd-controls .changer {' +
+        '    width: 50%;' +
+        '    float: right;' +
+        '    clear: right;' +
+        '}',
+        '#sdd-controls .wc-control-label {',
+        '    text-align: right;' +
+        '    width: 48%;' +
+        '    float: left;' +
+        '    clear: left;' +
+        '}',
         '#sdd-controls .annote {' + '    width: 98%;' + '    text-align: right;' + '}',
 
         //chart

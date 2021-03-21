@@ -17,12 +17,12 @@ export default function getMeasureDetails(pt_data) {
                     ? 'Y'
                     : '';
             measure_obj.raw.forEach(function(dii) {
-                dii.baseline = config.visits.baseline.indexOf(dii[config.visit_col]) > -1;
-                dii.comparison = config.visits.comparison.indexOf(dii[config.visit_col]) > -1;
-                dii.color = dii.baseline ? 'blue' : dii.comparison ? 'orange' : '#999';
+                dii.timepoint1 = config.visits.timepoint1.indexOf(dii[config.visit_col]) > -1;
+                dii.timepoint2 = config.visits.timepoint2.indexOf(dii[config.visit_col]) > -1;
+                dii.color = dii.timepoint1 ? 'blue' : dii.timepoint2 ? 'orange' : '#999';
             });
 
-            ['baseline', 'comparison'].forEach(function(t) {
+            ['timepoint1', 'timepoint2'].forEach(function(t) {
                 measure_obj[t + '_records'] = di.filter(
                     f => config.visits[t].indexOf(f[config.visit_col]) > -1
                 );
@@ -32,7 +32,7 @@ export default function getMeasureDetails(pt_data) {
                     d => d[config.value_col]
                 );
             });
-            measure_obj['delta'] = measure_obj.comparison_value - measure_obj.baseline_value;
+            measure_obj['delta'] = measure_obj.timepoint2_value - measure_obj.timepoint1_value;
             return measure_obj;
         })
         .entries(pt_data);

@@ -7,15 +7,15 @@ export default function updateControlInputs() {
     y_control.values = this.measures;
     y_control.start = this.config.measure.y;
 
-    const baseline_control = this.controls.config.inputs.find(
-        input => input.option === 'visits.baseline'
+    const timepoint1_control = this.controls.config.inputs.find(
+        input => input.option === 'visits.timepoint1'
     );
-    baseline_control.values = this.visits;
-    baseline_control.start = this.config.visits.baseline;
+    timepoint1_control.values = this.visits;
+    timepoint1_control.start = this.config.visits.timepoint1;
 
-    const comparison_control = this.controls.config.inputs.find(
-        input => input.option === 'visits.comparison'
+    const timepoint2_control = this.controls.config.inputs.find(
+        input => input.option === 'visits.timepoint2'
     );
-    comparison_control.values = this.visits;
-    comparison_control.start = this.config.visits.comprarison;
+    timepoint2_control.values = this.visits;
+    timepoint2_control.start = this.config.visits.comprarison;
 }

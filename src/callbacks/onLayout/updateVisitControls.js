@@ -1,20 +1,20 @@
 export default function updateVisitControls() {
     const config = this.config;
-    const baselineSelect = this.controls.wrap
+    const timepoint1Select = this.controls.wrap
         .selectAll('.control-group')
-        .filter(f => f.option === 'visits.baseline')
+        .filter(f => f.option === 'visits.timepoint1')
         .select('select');
-    baselineSelect
+    timepoint1Select
         .selectAll('option')
-        .filter(f => this.config.visits.baseline.indexOf(f) > -1)
+        .filter(f => this.config.visits.timepoint1.indexOf(f) > -1)
         .attr('selected', 'selected');
 
-    const comparisonSelect = this.controls.wrap
+    const timepoint2Select = this.controls.wrap
         .selectAll('.control-group')
-        .filter(f => f.option === 'visits.comparison')
+        .filter(f => f.option === 'visits.timepoint2')
         .select('select');
-    comparisonSelect
+    timepoint2Select
         .selectAll('option')
-        .filter(f => this.config.visits.comparison.indexOf(f) > -1)
+          .filter(f => this.config.visits.timepoint2.indexOf(f) > -1)
         .attr('selected', 'selected');
 }
