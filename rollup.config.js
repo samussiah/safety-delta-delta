@@ -1,11 +1,11 @@
 import json from 'rollup-plugin-json';
 import babel from 'rollup-plugin-babel';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 
-var pkg = require('./package.json');
+const pkg = require('./package.json');
 
-module.exports = {
+export default {
     input: pkg.module,
     output: {
         name: pkg.name
@@ -31,20 +31,17 @@ module.exports = {
     }()),
     plugins: [
         json({
-            include: ['settings-schema.json']
+            include: ['settings-schema.json'],
         }),
         babel({
             exclude: 'node_modules/**',
             presets: [
-                [ 'env', {modules: false} ]
+                [ '@babel/preset-env' ],
             ],
-            plugins: [
-                'external-helpers'
-            ],
-            babelrc: false
+            babelrc: false,
         }),
         nodeResolve(),
         commonjs(),
-    ]
+    ],
 };
 

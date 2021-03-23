@@ -80,11 +80,7 @@ export default function addSparkLines(d) {
                     .attr('stroke', d => d.color)
                     .attr('fill', d => (d.color == '#999' ? 'transparent' : d.color))
                     .append('title')
-                    .text(function(d) {
-                        return (
-                            'Value = ' + d[config.value_col] + ' @ Visit ' + d[config.visit_order_col]
-                        );
-                    });
+                    .text(d => `${d[config.visit_col]}: ${d[config.value_col]}`);
             });
     }
 }
